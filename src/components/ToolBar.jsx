@@ -1,10 +1,4 @@
-import {
-  HomeOutlined,
-  PersonOutline,
-  PersonSearch,
-  Message,
-  Notifications,
-} from "@mui/icons-material";
+import { Message } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 export default function ToolBar() {

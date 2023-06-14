@@ -11,7 +11,7 @@ export function SocketProvider({ children }) {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("ws://localhost:3201");
+    socket.current = io(process.env.SOCKET_SERVER);
   }, []);
 
   return (

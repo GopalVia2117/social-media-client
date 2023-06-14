@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import NoPost from "./NoPost";
-import UnderDevelopment from "./UnderDevelopment";
+import { SERVER_DOMAIN } from "../utils/pathService";
 
 function Feed({ username }) {
   const [posts, setPosts] = useState([]);
@@ -13,8 +13,8 @@ function Feed({ username }) {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = username
-        ? await axios.get(`/posts/profile/${username}`)
-        : await axios.get(`/posts/timeline/${user._id}`);
+        ? await axios.get(`${SERVER_DOMAIN}/api/posts/profile/${username}`)
+        : await axios.get(`${SERVER_DOMAIN}/api/posts/timeline/${user._id}`);
       // console.log(data);
       setPosts(
         data.sort((p1, p2) => {

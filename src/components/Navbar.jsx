@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import BASE_DIR from "../utils/pathService";
 
-function Navbar({ notifications }) {
+function Navbar() {
   let { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ function Navbar({ notifications }) {
           {user.profilePicture ? (
             <img
               className="w-8 h-8 rounded-full object-cover"
-              src={`${BASE_DIR}${user.profilePicture}`}
+              src={`${user.profilePicture}`}
               alt=""
             />
           ) : (

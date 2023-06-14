@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_DIR from "../utils/pathService";
+import {SERVER_DOMAIN } from "../utils/pathService";
 import { Person } from "@mui/icons-material";
 
 function ChatOnline({ onlineUsers, currentUserId, setCurrentChat }) {
@@ -10,7 +10,9 @@ function ChatOnline({ onlineUsers, currentUserId, setCurrentChat }) {
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const res = await axios.get("/users/friends/" + currentUserId);
+        const res = await axios.get(
+          `${SERVER_DOMAIN}/api/users/friends/${currentUserId}`
+        );
         setFriends(res.data);
       } catch (error) {
         console.log(error);
@@ -28,7 +30,7 @@ function ChatOnline({ onlineUsers, currentUserId, setCurrentChat }) {
   const handleClick = async (user) => {
     try {
       const res = await axios.get(
-        `/conversations/find/${currentUserId}/${user._id}`
+        `${SERVER_DOMAIN}/api/conversations/find/${currentUserId}/${user._id}`
       );
       setCurrentChat(res.data);
     } catch (error) {}
@@ -46,7 +48,7 @@ function ChatOnline({ onlineUsers, currentUserId, setCurrentChat }) {
             <div className="relative">
               <img
                 className="w-8 h-8 rounded-full object-cover"
-                src={`${BASE_DIR}${user.profilePicture}`}
+                src={user.profilePicture}
                 alt=""
               />
               <span className="absolute w-2 h-2 rounded-full bg-green-500 top-0 right-0"></span>

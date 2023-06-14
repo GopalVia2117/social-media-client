@@ -2,14 +2,13 @@ import Navbar from "../components/Navbar";
 import Leftsidebar from "../components/Leftsidebar";
 import Feed from "../components/Feed";
 import Rightsidebar from "../components/Rightsidebar";
-import { Posts, Users } from "../dummyData";
-import Profile from "./Profile";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import ToolBar from "../components/ToolBar";
 
 function Home() {
   const { user } = useContext(AuthContext);
+
   return (
     <div className="w-full">
       <Navbar />

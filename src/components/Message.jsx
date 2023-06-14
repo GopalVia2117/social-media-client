@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import timeago, { format } from "timeago.js";
-import BASE_DIR from "../utils/pathService";
+import { SERVER_DOMAIN } from "../utils/pathService";
 import { Person } from "@mui/icons-material";
 
 export default function Message({ currentUser, message }) {
@@ -15,7 +15,9 @@ export default function Message({ currentUser, message }) {
           setSenderProfile(currentUser);
           setOwn(true);
         } else {
-          const response = await axios.get("/users?userId=" + message.sender);
+          const response = await axios.get(
+            `${SERVER_DOMAIN}/users?userId=${message.sender}`
+          );
           setSenderProfile(response.data);
           setOwn(false);
         }
@@ -32,7 +34,7 @@ export default function Message({ currentUser, message }) {
           {senderProfile?.profilePicture ? (
             <img
               className="w-8 h-8 rounded-full object-cover mr-2"
-              src={`${BASE_DIR}${senderProfile.profilePicture}`}
+              src={`$${senderProfile.profilePicture}`}
               alt=""
             />
           ) : (

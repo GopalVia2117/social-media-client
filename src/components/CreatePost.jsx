@@ -1,15 +1,8 @@
-import {
-  Room,
-  Label,
-  EmojiEmotions,
-  PermMedia,
-  Person,
-  Cancel,
-} from "@mui/icons-material";
+import { PermMedia, Person, Cancel } from "@mui/icons-material";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import BASE_DIR from "../utils/pathService";
+import { SERVER_DOMAIN } from "../utils/pathService";
 import Loading from "./Loading";
 
 function CreatePost() {
@@ -20,6 +13,7 @@ function CreatePost() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     const newPost = {
       userId: user._id,
       desc: desc.current.value,
@@ -30,8 +24,8 @@ function CreatePost() {
       const fileName = Date.now().toString() + file.name;
       data.append("name", fileName);
       data.append("file", file);
-      console.log(data.get("name"));
-      newPost.img = fileName;
+
+      // console.log(data.get("name"));
 
       const config = () => {
         data.encType = "multipart/form-data";
@@ -39,7 +33,19 @@ function CreatePost() {
 
       try {
         setLoading(true);
-        await axios.post("/upload", data, config);
+        const response = await axios.post(
+          `${SERVER_DOMAIN}/api/upload`,
+          data,
+          config
+        );
+
+        newPost.img = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`;
+
+        await axios.post(`${SERVER_DOMAIN}/api/posts`, newPost);
+        setFile(null);
+        desc.current.value = "";
+        setLoading(false);
+        window.location.reload();
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -47,30 +53,33 @@ function CreatePost() {
         setLoading(false);
       }
 
-      try {
-        await axios.post("/posts", newPost);
-        setFile(null);
-        desc.current.value = "";
-        setLoading(false);
-        window.location.reload();
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      }
+      // try {
+      //   await axios.post(
+      //     "https://social-media-rest-api-m7as.onrender.com/api/posts",
+      //     newPost
+      //   );
+      //   setFile(null);
+      //   desc.current.value = "";
+      //   setLoading(false);
+      //   window.location.reload();
+      // } catch (err) {
+      //   console.log(err);
+      //   setLoading(false);
+      // }
     }
   };
 
   return (
     <form
       encType="multipart/form-data"
-      onSubmit={submitHandler}
+      onSubmit={(e) => submitHandler(e)}
       className="shadow-md p-5 relative"
     >
       <div className="flex gap-4 items-center">
         {user.profilePicture ? (
           <img
             className="w-8 h-8 rounded-full object-cover"
-            src={`${BASE_DIR}${user.profilePicture}`}
+            src={`${user.profilePicture}`}
             alt=""
           />
         ) : (
@@ -85,10 +94,8 @@ function CreatePost() {
           ref={desc}
         />
       </div>
-      <div>
-        {/* {file ? <span>{file.name}</span> : ""} */}
-
-        {file ? (
+      {file ? (
+        <div>
           <div className="relative">
             <img
               className="w-full object-contain max-h-[200px]"
@@ -97,17 +104,18 @@ function CreatePost() {
             />
 
             <button
-              onClick={() => setFile(null)}
+              onClick={() => {
+                setFile(null);
+              }}
               className="absolute right-0 top-0 text-red-500"
             >
               <Cancel />
             </button>
           </div>
-        ) : (
-          ""
-        )}
-      </div>
-
+        </div>
+      ) : (
+        ""
+      )}
       <hr className="mt-2" />
 
       <div className="flex flex-col items-center md:flex-row justify-between mt-4">
@@ -115,18 +123,18 @@ function CreatePost() {
           <label htmlFor="file" className="space-x-1">
             <PermMedia htmlColor="tomato" />
             <span className="font-medium">Choose Picture</span>
-            <input
-              className="hidden"
-              type="file"
-              id="file"
-              name="file"
-              accept=".png,.jpeg,.jpg"
-              onChange={(e) => {
-                setFile(e.target.files[0]);
-                console.log(file);
-              }}
-            />
           </label>
+          <input
+            className="hidden"
+            type="file"
+            id="file"
+            name="file"
+            accept=".png,.jpeg,.jpg"
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+              e.target.value = "";
+            }}
+          />
 
           {/* <button className="space-x-1">
             <Label htmlColor="blue" />

@@ -1,4 +1,3 @@
-import BASE_DIR from "../utils/pathService";
 import { Person } from "@mui/icons-material";
 
 function User({ user }) {
@@ -8,7 +7,7 @@ function User({ user }) {
         {user?.profilePicture ? (
           <img
             className="w-8 h-8 rounded-full object-cover"
-            src={`${BASE_DIR}${user.profilePicture}`}
+            src={`${user.profilePicture}`}
             alt=""
           />
         ) : (

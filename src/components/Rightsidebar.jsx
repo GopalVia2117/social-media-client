@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Online from "./Online";
 import axios from "axios";
-import BASE_DIR from "../utils/pathService";
+import { SERVER_DOMAIN } from "../utils/pathService";
 import { AuthContext } from "../context/AuthContext";
 import { Person } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -13,17 +13,17 @@ function Rightsidebar({ user }) {
   const [followed, setFollowed] = useState(false);
 
   useEffect(() => {
-    setFollowed(currentUser.followings.includes(user?._id));
+    setFollowed(currentUser.followings?.includes(user?._id));
   }, [currentUser, user?._id]);
 
   const handleFollow = async () => {
     try {
       if (followed) {
-        await axios.put(`/users/${user._id}/unfollow`, {
+        await axios.put(`${SERVER_DOMAIN}/api/users/${user._id}/unfollow`, {
           userId: currentUser._id,
         });
       } else {
-        await axios.put(`/users/${user._id}/follow`, {
+        await axios.put(`${SERVER_DOMAIN}/api/users/${user._id}/follow`, {
           userId: currentUser._id,
         });
       }
@@ -37,7 +37,9 @@ function Rightsidebar({ user }) {
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const { data } = await axios.get(`/users/friends/${user._id}`);
+        const { data } = await axios.get(
+          `${SERVER_DOMAIN}/api/users/friends/${user._id}`
+        );
         setFriends(data);
       } catch (err) {
         console.log(err);
@@ -50,7 +52,7 @@ function Rightsidebar({ user }) {
     return (
       <>
         <div className="flex items-center gap-2">
-          <img className="w-12 h-12" src={`${BASE_DIR}gift.png`} alt="" />
+          <img className="w-12 h-12" src="/assets/gift.png" alt="" />
           <span>
             <b>Palo Papello</b> and <b>3 other friends</b> have their birthdays
             today.
@@ -111,28 +113,32 @@ function Rightsidebar({ user }) {
 
         <div className="mt-4">
           <h2 className="font-medium text-xl">User friends</h2>
-          <div className="flex flex-wrap gap-3 mt-2">
-            {friends.map((friend) => {
-              return (
-                <Link key={friend._id} to={"/profile/" + friend.username}>
-                  <div className="flex flex-col items-center">
-                    {friend.profilePicture ? (
-                      <img
-                        className="w-24 h-24 rounded-md object-cover"
-                        src={`${BASE_DIR}${friend.profilePicture}`}
-                        alt=""
-                      />
-                    ) : (
-                      <span className="border border-white rounded-full p-2">
-                        <Person htmlColor="lightgray" />
-                      </span>
-                    )}
-                    <span>{friend.username}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          {friends.length > 0 ? (
+            <div className="flex flex-wrap gap-3 mt-2">
+              {friends.map((friend) => {
+                return (
+                  <Link key={friend._id} to={"/profile/" + friend.username}>
+                    <div className="flex flex-col items-center">
+                      {friend.profilePicture ? (
+                        <img
+                          className="w-24 h-24 rounded-md object-cover"
+                          src={`${friend.profilePicture}`}
+                          alt=""
+                        />
+                      ) : (
+                        <span className="border border-white rounded-full p-2">
+                          <Person htmlColor="lightgray" />
+                        </span>
+                      )}
+                      <span>{friend.username}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <span className="text-red-400 text-lg">No friends</span>
+          )}
         </div>
       </>
     );

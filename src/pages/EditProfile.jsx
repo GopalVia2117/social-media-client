@@ -1,6 +1,6 @@
 import { AuthContext } from "../context/AuthContext";
 import { useContext, useState, useEffect } from "react";
-import BASE_DIR from "../utils/pathService";
+import { SERVER_DOMAIN } from "../utils/pathService";
 import { Person, Photo } from "@mui/icons-material";
 import { ArrowRight } from "@mui/icons-material";
 import Navbar from "../components/Navbar";
@@ -21,87 +21,83 @@ function EditProfile() {
   const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    const updatedFields = {
-      userId: user._id,
-    };
-
-    const file = profileFile || coverFile;
-    console.log(file);
-
-    if (file) {
-      const data = new FormData();
-      const fileName = Date.now().toString() + file.name;
-      data.append("name", fileName);
-      data.append("file", file);
-      console.log(data.get("name"));
-      {
-        profileFile
-          ? (updatedFields.profilePicture = fileName)
-          : (updatedFields.coverPicture = fileName);
-      }
-
-      console.log(updatedFields);
-      const config = () => {
-        data.encType = "multipart/form-data";
+    try {
+      e.preventDefault();
+      const updatedFields = {
+        userId: user._id,
       };
 
-      try {
+      const file = profileFile || coverFile;
+      console.log(file);
+
+      if (file) {
+        const data = new FormData();
+        const fileName = Date.now().toString() + file.name;
+        data.append("name", fileName);
+        data.append("file", file);
+
+        console.log(updatedFields);
+        const config = () => {
+          data.encType = "multipart/form-data";
+        };
+
         setLoading(true);
-        await axios.post("/upload", data, config);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
+        const response = await axios.post(
+          `${SERVER_DOMAIN}/api/upload`,
+          data,
+          config
+        );
+        {
+          profileFile
+            ? (updatedFields.profilePicture = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`)
+            : (updatedFields.coverPicture = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`);
+        }
 
-      try {
-        await axios.put(`/users/${user._id}`, updatedFields);
+        await axios.put(
+          `${SERVER_DOMAIN}/api/users/${user._id}`,
+          updatedFields
+        );
         setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
 
-      const previousUserCredentials = JSON.parse(localStorage.getItem("user"));
-      const updatedUserCredentials = {
-        ...previousUserCredentials,
-        ...updatedFields,
-      };
-      localStorage.setItem("user", JSON.stringify(updatedUserCredentials));
-      window.location.reload();
-    } else {
-      if (city) {
-        updatedFields.city = city;
-      }
-      if (town) {
-        updatedFields.from = town;
-      }
+        const previousUserCredentials = JSON.parse(
+          localStorage.getItem("user")
+        );
+        const updatedUserCredentials = {
+          ...previousUserCredentials,
+          ...updatedFields,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUserCredentials));
+        window.location.reload();
+      } else {
+        if (city) {
+          updatedFields.city = city;
+        }
+        if (town) {
+          updatedFields.from = town;
+        }
 
-      if (relation) {
-        updatedFields.relationship = relation;
-      }
+        if (relation) {
+          updatedFields.relationship = relation;
+        }
 
-      try {
         setLoading(true);
-        await axios.put(`/users/${user._id}`, updatedFields);
+        await axios.put(
+          `${SERVER_DOMAIN}/api/users/${user._id}`,
+          updatedFields
+        );
         setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      } finally {
-        setLoading(false);
+        const previousUserCredentials = JSON.parse(
+          localStorage.getItem("user")
+        );
+        const updatedUserCredentials = {
+          ...previousUserCredentials,
+          ...updatedFields,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUserCredentials));
+        window.location.reload();
       }
-      const previousUserCredentials = JSON.parse(localStorage.getItem("user"));
-      const updatedUserCredentials = {
-        ...previousUserCredentials,
-        ...updatedFields,
-      };
-      localStorage.setItem("user", JSON.stringify(updatedUserCredentials));
-      window.location.reload();
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -119,7 +115,7 @@ function EditProfile() {
           {!profileFile && profileImage ? (
             <img
               className="relative w-32 h-32 rounded-full object-cover mx-auto  border-2 border-white"
-              src={`${BASE_DIR}${profileImage}`}
+              src={`${profileImage}`}
               alt=""
             />
           ) : (
@@ -181,7 +177,7 @@ function EditProfile() {
           {!coverFile && coverImage ? (
             <img
               className="max-w-[240px] object-cover mx-auto mt-2"
-              src={`${BASE_DIR}${coverImage}`}
+              src={`${coverImage}`}
               alt=""
             />
           ) : (

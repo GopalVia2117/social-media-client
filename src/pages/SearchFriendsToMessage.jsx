@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { ArrowBack } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import User from "../components/User";
+import { useContext, useEffect, useState, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { SERVER_DOMAIN } from "../utils/pathService";
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import User from "../components/User";
+import { useNavigate, Link } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -23,10 +22,11 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-function Search() {
+function SearchFriendsToMessage() {
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState([]);
+  const [friends, setFriends] = useState([]);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const debouncedSearchTerm = useDebounce(search, 300);
 
@@ -41,9 +41,9 @@ function Search() {
             `${SERVER_DOMAIN}/api/users/search/${search}`
           );
           console.log(res.data);
-          setUsers(res.data);
+          setFriends(res.data);
         } else {
-          setUsers([]);
+          setFriends([]);
         }
       } catch (error) {
         console.log(error);
@@ -57,8 +57,7 @@ function Search() {
 
   return (
     <div className="w-full mx-auto text-center flex flex-col items-center">
-      <Navbar />
-      <div className="lg:w-1/2 flex items-center mt-10">
+      <div className="w-full lg:w-1/2 flex items-center mt-10">
         <span
           onClick={() => navigate(-1, { replace: true })}
           className="font-bold text-3xl mr-4 flex items-center"
@@ -76,15 +75,15 @@ function Search() {
       </div>
 
       <div className="bg-white px-2 py-1 flex flex-col items-center">
-        {users.length > 0 ? (
+        {friends.length > 0 ? (
           <>
-            {users?.map((user) => (
+            {friends?.map((friend) => (
               <Link
                 className="w-full"
-                key={user._id}
-                to={`/profile/${user.username}`}
+                key={friend._id}
+                to={`/editor/${user._id}/${friend._id}`}
               >
-                <User user={user} />
+                <User user={friend} />
               </Link>
             ))}
           </>
@@ -98,4 +97,4 @@ function Search() {
   );
 }
 
-export default Search;
+export default SearchFriendsToMessage;

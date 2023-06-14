@@ -6,7 +6,7 @@ import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
-import BASE_DIR from "../utils/pathService";
+import { SERVER_DOMAIN } from "../utils/pathService";
 
 function Post({ post, showModal }) {
   // const postUser = users.filter((postUser) => postUser?.id === post?.userId)[0];
@@ -23,7 +23,7 @@ function Post({ post, showModal }) {
   useEffect(() => {
     const fetchUser = async () => {
       const { data: postUser } = await axios.get(
-        `/users?userId=${post.userId}`
+        `${SERVER_DOMAIN}/api/users?userId=${post.userId}`
       );
       setPostUser(postUser);
     };
@@ -33,9 +33,12 @@ function Post({ post, showModal }) {
 
   const handleLike = async () => {
     try {
-      const response = await axios.put(`/posts/${post._id}/like`, {
-        userId: user._id,
-      });
+      const response = await axios.put(
+        `${SERVER_DOMAIN}/posts/${post._id}/like`,
+        {
+          userId: user._id,
+        }
+      );
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -52,7 +55,7 @@ function Post({ post, showModal }) {
             {postUser?.profilePicture ? (
               <img
                 className="w-8 h-8 rounded-full object-cover fill-gray-500"
-                src={`${BASE_DIR}${postUser?.profilePicture}`}
+                src={`${postUser?.profilePicture}`}
                 alt=""
               />
             ) : (
@@ -75,7 +78,7 @@ function Post({ post, showModal }) {
         <p className="postTitle my-2">{post?.desc}</p>
         <img
           className="w-full object-contain max-h-[500px]"
-          src={`${BASE_DIR}${post?.img}`}
+          src={`${post?.img}`}
           alt=""
         />
       </div>
@@ -91,33 +94,9 @@ function Post({ post, showModal }) {
           </button>
           <span className="text-sm">{likeCount} people liked it</span>
         </div>
-        <button className="text-sm  border-b-2 border-dashed  border-b-gray-100">
+        {/* <button className="text-sm  border-b-2 border-dashed  border-b-gray-100">
           {post.comment > 0 ? post.comment : "No"} comment
-        </button>
-
-        {/* <UnderDevelopment /> */}
-        {/* <dialog
-          className="flex flex-col justify-center text-center content-center rounded-md w-80 h-96"
-          ref={model}
-        >
-          <div className="">
-            <video autoplay loop src="/assets/presentation.mp4">
-              Working on this feature...
-            </video>
-            <button
-              className="bg-green-800 text-white rounded-lg px-2 py-1 mt-2"
-              onClick={() => {
-                model.current.close();
-              }}
-              value="close"
-              j
-              ref={closeBtn}
-              formMethod="dialog"
-            >
-              Close
-            </button>
-          </div>
-        </dialog> */}
+        </button> */}
       </div>
     </div>
   );

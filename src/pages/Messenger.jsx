@@ -1,60 +1,24 @@
 import Navbar from "../components/Navbar";
 import Conversation from "../components/Conversation";
-import Message from "../components/Message";
-import ChatOnline from "../components/ChatOnline";
 import { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import { io } from "socket.io-client";
+import { SERVER_DOMAIN } from "../utils/pathService";
 import { useNotifications } from "../context/NotificationContext";
 import { useSocket } from "../context/SocketContext";
+import { useNavigate, Link } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 
 function Messenger() {
   const { user } = useContext(AuthContext);
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
-  const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const scrollRef = useRef();
-  // const socket = useRef();
+  const [search, setSearch] = useState("");
   const socket = useSocket();
-
   const { notifications, setNotifications } = useNotifications();
-
-  useEffect(() => {
-    // socket.current = io("ws://localhost:3201");
-
-    socket.current?.on("getMessage", (data) => {
-      console.log("Get Message Event Called....");
-
-      const currentTime = Date.now();
-
-      const newNotifications = [
-        ...notifications,
-        {
-          sender: data.senderId,
-          notificationMessage: data.notificationMessage,
-        },
-      ];
-
-      setNotifications(newNotifications);
-      console.log(notifications);
-
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: currentTime,
-      });
-    });
-  });
-
-  useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
-      setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage, currentChat]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.current?.emit("addUser", user._id);
@@ -66,22 +30,11 @@ function Messenger() {
   }, [user]);
 
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const response = await axios.get("/messages/" + currentChat?._id);
-        setMessages(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getMessages();
-  }, [currentChat]);
-
-  useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get("/conversations/" + user._id);
+        const res = await axios.get(
+          `${SERVER_DOMAIN}/api/conversations/${user._id}`
+        );
         setConversations(res.data);
       } catch (error) {
         console.log(error);
@@ -91,115 +44,70 @@ function Messenger() {
     getConversations();
   }, [user._id]);
 
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newMsg = {
-      sender: user._id,
-      conversationId: currentChat._id,
-      text: newMessage,
-    };
-
-    const receiverId = currentChat.members.find(
-      (member) => member !== user._id
-    );
-
-    socket.current?.emit("sendMessage", {
-      senderId: user._id,
-      receiverId: receiverId,
-      text: newMessage,
-      notificationMessage: "message",
-    });
-
-    try {
-      const res = await axios.post("/messages", newMsg);
-      setMessages([...messages, res.data]);
-      setNewMessage("");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
-      <Navbar notifications={notifications} />
       <div
         style={{ height: "calc(100vh - 6rem)" }}
-        className="w-full flex flex-col lg:flex-row p-4"
+        className="w-full flex flex-col items-center p-4"
       >
-        <div className="w-full lg:w-3/12">
-          <input
-            className="inline-block outline-none border-b border-b-gray-100 focus:border-b-gray-300 p-2 w-11/12"
-            placeholder="Search for friends"
-          />
-          <div className="w-full whitespace-nowrap overflow-x-auto">
-            {conversations.map((conversation) => (
-              <div
-                className="inline-block lg:block w-max"
-                key={conversation._id}
-                onClick={() => setCurrentChat(conversation)}
-              >
-                <Conversation conversation={conversation} currentUser={user} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="w-full lg:w-6/12 h-full">
-          {currentChat ? (
-            <>
-              <div className="h-3/4 overflow-y-auto p-4 ">
-                {messages.map((message) => (
-                  <div ref={scrollRef} key={message._id}>
-                    <Message currentUser={user} message={message} />
-                  </div>
-                ))}
-              </div>
-
-              <hr className="my-2" />
-              <div className="flex justify-around items-center mt-4">
-                <textarea
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  value={newMessage}
-                  className="w-96 h-32 outline-none border p-2 border-gray-200 hover:border-gray-400 focus:border-gray-400"
-                  placeholder="Write something..."
-                ></textarea>
-                <button
-                  onClick={handleSubmit}
-                  type="submit"
-                  className="px-4 py-2 bg-teal-600 text-white rounded-md"
-                >
-                  Send
-                </button>
-              </div>
-            </>
-          ) : (
-            <span className="text-3xl md:text-5xl lg:text-6xl text-gray-400 relative top-20">
-              Open a conversation to start a chat...
+        <div className="w-96 lg:w-1/2">
+          <div className="flex justify-between items-center">
+            <span
+              onClick={() => navigate(-1, { replace: true })}
+              className="flex items-center"
+            >
+              <span className="font-bold mr-4 text-xl text-gray-800 cursor-pointer">
+                <ArrowBack />
+              </span>
+              <span className="font-md text-xl text-gray-400">
+                Conversations
+              </span>
             </span>
+
+            {/* <input
+              type="text"
+              value={search}
+              placeholder="Search for friend..."
+              className="flex-grow border rounded-md border-gray-300 px-2 py-1 outline-none focus:border-gray-500 hover:border-gray-500"
+              onChange={(e) => setSearch(e.target.value)}
+            /> */}
+            <Link
+              to="/search-chat"
+              className="bg-gray-100 hover:bg-gray-200 rounded-full p-1 text-gray-800"
+            >
+              <Search />
+            </Link>
+          </div>
+          {conversations.length > 0 ? (
+            <div className="w-full">
+              {conversations.map((conversation) => (
+                <div
+                  className="block w-max mx-auto"
+                  key={conversation._id}
+                  onClick={() => setCurrentChat(conversation)}
+                  to={`/editor/${user._id}/${conversation.members.map(
+                    (c) => c !== user._id
+                  )}`}
+                >
+                  <Conversation
+                    conversation={conversation}
+                    currentUser={user}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-24">
+              <h1 className="text-4xl font-semibold text-gray-500">
+                No conversations to show.
+              </h1>
+              <h2 className="text-xl font-md text-gray-200">
+                Search for friend and initiate a conversation.
+              </h2>
+            </div>
           )}
         </div>
-        {/* <div className="w-3/12 p-4">
-          <ChatOnline
-            onlineUsers={onlineUsers}
-            currentUserId={user._id}
-            setCurrentChat={setCurrentChat}
-          />
-        </div> */}
       </div>
-
-      {/* <datalist id="friends">
-        {conversations.map((conversation) => (
-          <option key={conversation._id}>
-            <div onClick={() => setCurrentChat(conversation)}>
-              <Conversation conversation={conversation} currentUser={user} />
-            </div>
-          </option>
-        ))}
-      </datalist> */}
     </>
   );
 }

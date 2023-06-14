@@ -1,5 +1,4 @@
 import { Person } from "@mui/icons-material";
-import BASE_DIR from "../utils/pathService";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -14,9 +13,7 @@ function Intro({ user }) {
         <img
           className="w-full h-56 object-cover"
           src={
-            user.coverPicture
-              ? `${BASE_DIR}/${user.coverPicture}`
-              : "/assets/post/4.jpeg"
+            user.coverPicture ? `${user.coverPicture}` : "/assets/nocover.jpg"
           }
           alt="Cover image"
         />
@@ -26,11 +23,11 @@ function Intro({ user }) {
         {user.profilePicture ? (
           <img
             className="relative w-32 h-32 rounded-full object-cover mx-auto -top-16 border-2 border-white"
-            src={`${BASE_DIR}${user.profilePicture}`}
+            src={`${user.profilePicture}`}
             alt=""
           />
         ) : (
-          <span className="relative flex  justify-center items-center w-32 h-32 object-cover mx-auto -top-16 border-2 border-white text-[128px] rounded-full p-2">
+          <span className="relative flex  justify-center items-center w-32 h-32 object-cover mx-auto -top-16 border-2 border-yellow-400 text-[128px] rounded-full p-2">
             <Person htmlColor="lightgray" fontSize="inherit" />
           </span>
         )}
