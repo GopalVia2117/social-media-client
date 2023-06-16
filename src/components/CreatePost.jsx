@@ -39,7 +39,7 @@ function CreatePost() {
           config
         );
 
-        newPost.img = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`;
+        newPost.img = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`;
 
         await axios.post(`${SERVER_DOMAIN}/api/posts`, newPost);
         setFile(null);
@@ -52,20 +52,6 @@ function CreatePost() {
       } finally {
         setLoading(false);
       }
-
-      // try {
-      //   await axios.post(
-      //     "https://social-media-rest-api-m7as.onrender.com/api/posts",
-      //     newPost
-      //   );
-      //   setFile(null);
-      //   desc.current.value = "";
-      //   setLoading(false);
-      //   window.location.reload();
-      // } catch (err) {
-      //   console.log(err);
-      //   setLoading(false);
-      // }
     }
   };
 
@@ -135,21 +121,6 @@ function CreatePost() {
               e.target.value = "";
             }}
           />
-
-          {/* <button className="space-x-1">
-            <Label htmlColor="blue" />
-            <span className="font-medium">Tag</span>
-          </button>
-
-          <button className="space-x-1">
-            <Room htmlColor="green" />
-            <span className="font-medium">Location</span>
-          </button>
-
-          <button className="space-x-1">
-            <EmojiEmotions htmlColor="goldenrod" />
-            <span className="font-medium">Feelings</span>
-          </button> */}
         </div>
 
         <div>

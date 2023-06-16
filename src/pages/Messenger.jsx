@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import Conversation from "../components/Conversation";
 import { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";

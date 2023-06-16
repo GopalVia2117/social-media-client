@@ -8,7 +8,6 @@ import axios from "axios";
 import { SERVER_DOMAIN } from "../utils/pathService";
 import { AuthContext } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 const MessageEditor = ({}) => {
   const param = useParams();

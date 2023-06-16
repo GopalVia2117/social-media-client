@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import timeago, { format } from "timeago.js";
+import { format } from "timeago.js";
 import { SERVER_DOMAIN } from "../utils/pathService";
 import { Person } from "@mui/icons-material";
 

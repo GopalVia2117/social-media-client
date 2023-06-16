@@ -1,14 +1,7 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import {
-  Person,
-  Message,
-  Notifications,
-  Search,
-  FavoriteBorder,
-} from "@mui/icons-material";
-import BASE_DIR from "../utils/pathService";
+import { Person, Message, Search, FavoriteBorder } from "@mui/icons-material";
 
 function Navbar() {
   let { user } = useContext(AuthContext);

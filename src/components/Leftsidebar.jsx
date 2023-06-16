@@ -1,8 +1,5 @@
 import ChatIcon from "@mui/icons-material/Chat";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import RssFeedIcon from "@mui/icons-material/RssFeed";
-import GroupIcon from "@mui/icons-material/Group";
-import { Diversity1Sharp } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 function Leftsidebar({}) {
@@ -23,21 +20,6 @@ function Leftsidebar({}) {
               <span className="text-sm font-medium"> Chats </span>
             </div>
           </Link>
-
-          {/* <a
-            href="#"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700"
-          >
-            <PlayCircleIcon />
-            <span className="text-sm font-medium"> Videos </span>
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-700"
-          >
-            <GroupIcon />
-            <span className="text-sm font-medium"> Groups </span>
-          </a> */}
         </nav>
 
         <hr className="mt-4" />

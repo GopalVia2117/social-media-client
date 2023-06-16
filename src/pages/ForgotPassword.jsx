@@ -86,7 +86,7 @@ function ForgotPassword() {
                 required
                 placeholder="Confirm new password"
               />
-              <button className="p-3 rounded-md my-2 text-sm bg-green-600 text-white text-xl">
+              <button className="p-3 rounded-md my-2 bg-green-600 text-white text-xl">
                 Update Password
               </button>
             </form>

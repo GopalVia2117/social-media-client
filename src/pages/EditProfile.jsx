@@ -6,7 +6,6 @@ import { ArrowRight } from "@mui/icons-material";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import Loading from "../components/Loading";
-import { useNavigate } from "react-router-dom";
 
 function EditProfile() {
   const { user } = useContext(AuthContext);
@@ -49,8 +48,8 @@ function EditProfile() {
         );
         {
           profileFile
-            ? (updatedFields.profilePicture = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`)
-            : (updatedFields.coverPicture = `https://res.cloudinary.com/djop9ubq6/image/upload/${fileName}`);
+            ? (updatedFields.profilePicture = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`)
+            : (updatedFields.coverPicture = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`);
         }
 
         await axios.put(

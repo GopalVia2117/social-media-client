@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar";
-import Leftsidebar from "../components/Leftsidebar";
 import Feed from "../components/Feed";
 import Rightsidebar from "../components/Rightsidebar";
 import Intro from "../components/Intro";

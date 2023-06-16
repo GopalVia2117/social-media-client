@@ -1,5 +1,5 @@
-import { MoreVert, TroubleshootOutlined } from "@mui/icons-material";
-import { useState, useEffect, useContext, useRef } from "react";
+import { MoreVert } from "@mui/icons-material";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Person } from "@mui/icons-material";
 import { format } from "timeago.js";
@@ -8,9 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
 import { SERVER_DOMAIN } from "../utils/pathService";
 
-function Post({ post, showModal }) {
-  // const postUser = users.filter((postUser) => postUser?.id === post?.userId)[0];
-
+function Post({ post }) {
   const [likeCount, setLikeCount] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const { user } = useContext(AuthContext);
