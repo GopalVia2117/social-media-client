@@ -11,7 +11,7 @@ export function SocketProvider({ children }) {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io(process.env.SOCKET_SERVER);
+    socket.current = io(process.env.REACT_APP_SOCKET_SERVER);
   }, []);
 
   return (

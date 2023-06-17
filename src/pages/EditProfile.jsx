@@ -1,5 +1,5 @@
 import { AuthContext } from "../context/AuthContext";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { SERVER_DOMAIN } from "../utils/pathService";
 import { Person, Photo } from "@mui/icons-material";
 import { ArrowRight } from "@mui/icons-material";
@@ -41,15 +41,11 @@ function EditProfile() {
         };
 
         setLoading(true);
-        const response = await axios.post(
-          `${SERVER_DOMAIN}/api/upload`,
-          data,
-          config
-        );
+        await axios.post(`${SERVER_DOMAIN}/api/upload`, data, config);
         {
           profileFile
-            ? (updatedFields.profilePicture = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`)
-            : (updatedFields.coverPicture = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`);
+            ? (updatedFields.profilePicture = `https://res.cloudinary.com/${process.env.REACT_APP_CLOUD_NAME}/image/upload/${fileName}`)
+            : (updatedFields.coverPicture = `https://res.cloudinary.com/${process.env.REACT_APP_CLOUD_NAME}/image/upload/${fileName}`);
         }
 
         await axios.put(

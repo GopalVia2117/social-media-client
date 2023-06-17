@@ -39,7 +39,7 @@ function CreatePost() {
           config
         );
 
-        newPost.img = `https://res.cloudinary.com/${process.env.CLOUD_NAME}/image/upload/${fileName}`;
+        newPost.img = `https://res.cloudinary.com/${process.env.REACT_APP_CLOUD_NAME}/image/upload/${fileName}`;
 
         await axios.post(`${SERVER_DOMAIN}/api/posts`, newPost);
         setFile(null);

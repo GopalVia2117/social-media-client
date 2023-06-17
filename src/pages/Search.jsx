@@ -58,10 +58,10 @@ function Search() {
   return (
     <div className="w-full mx-auto text-center flex flex-col items-center">
       <Navbar />
-      <div className="lg:w-1/2 flex items-center mt-10">
+      <div className="w-full lg:w-1/2 flex items-center mt-10">
         <span
           onClick={() => navigate(-1, { replace: true })}
-          className="font-bold text-3xl mr-4 flex items-center"
+          className="font-bold text-xl mr-4 flex items-center"
         >
           <ArrowBack />
         </span>
@@ -70,7 +70,7 @@ function Search() {
           type="text"
           value={search}
           placeholder="Search for friend..."
-          className="flex-grow border rounded-md border-gray-300 px-2 py-1 outline-none focus:border-gray-500 hover:border-gray-500"
+          className="flex-grow border rounded-md border-gray-300 p-3 text-xl outline-none focus:border-gray-500 hover:border-gray-500"
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
@@ -89,7 +89,7 @@ function Search() {
             ))}
           </>
         ) : (
-          <h1 className="text-4xl mt-10 text-gray-500 fond-medium">
+          <h1 className="text-xl mt-10 text-gray-500 fond-medium">
             No result found
           </h1>
         )}
